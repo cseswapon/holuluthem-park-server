@@ -15,8 +15,13 @@ async function run() {
     try {
         await client.connect();
         console.log("Database Connect Successfully");
-        // const database = client.db("Assignments");
-        // const userCollection = database.collection("UserCollection")
+        const database = client.db("Hololu");
+        const serviceCollection = database.collection("serviceCollection")
+        app.get('/service', async (req, res) => {
+            const cursor = serviceCollection.find({});
+            const result = await cursor.toArray();
+            res.send(result)
+        })
     }
     finally {
         // await client.close();
