@@ -1,4 +1,5 @@
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 const express = require('express');
 require('dotenv').config();
 const app = express();
@@ -17,10 +18,18 @@ async function run() {
         console.log("Database Connect Successfully");
         const database = client.db("Hololu");
         const serviceCollection = database.collection("serviceCollection")
+        // all data service
         app.get('/service', async (req, res) => {
             const cursor = serviceCollection.find({});
             const result = await cursor.toArray();
             res.send(result)
+        })
+        // single data service
+        app.get('/service/:id', async (req, res) => {
+            const id = req.params.id;
+            const singleService = { _id: ObjectId(id) };
+            const result = await serviceCollection.findOne(singleService);
+            res.send(result);
         })
     }
     finally {
