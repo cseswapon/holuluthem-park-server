@@ -17,12 +17,19 @@ async function run() {
         await client.connect();
         console.log("Database Connect Successfully");
         const database = client.db("Hololu");
-        const serviceCollection = database.collection("serviceCollection")
+        const serviceCollection = database.collection("serviceCollection");
+        const placeOrder = database.collection("order");
         // all data service
         app.get('/service', async (req, res) => {
             const cursor = serviceCollection.find({});
             const result = await cursor.toArray();
             res.send(result)
+        })
+        app.post('/service', async (req, res) => {
+            const data = req.body;
+            // console.log(req.body);
+            const result = await serviceCollection.insertOne(data);
+            res.send(result);
         })
         // single data service
         app.get('/service/:id', async (req, res) => {
@@ -30,6 +37,27 @@ async function run() {
             const singleService = { _id: ObjectId(id) };
             const result = await serviceCollection.findOne(singleService);
             res.send(result);
+        })
+        // add order 
+        app.post('/add', async (req, res) => {
+            // console.log("Hitted Data", req.body);
+            const data = req.body;
+            const result = await placeOrder.insertOne(data);
+            res.send(result);
+        })
+        // get order
+        app.get('/add', async (req, res) => {
+            const cursor = placeOrder.find({});
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+        // delete order
+        app.delete('/add/:id', async (req, res) => {
+            console.log(req.params.id);
+            const id = req.params.id;
+            const singleDelete = { _id: ObjectId(id) }
+            const result = await placeOrder.deleteOne(singleDelete)
+            res.json(result); 
         })
     }
     finally {
