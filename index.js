@@ -59,6 +59,20 @@ async function run() {
             const result = await placeOrder.deleteOne(singleDelete)
             res.json(result); 
         })
+        // update user
+        app.put('/add/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log("updating successfully",id);
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true }
+            const updateDoc = {
+                $set: {
+                    status: "Approved"
+                },
+            };
+            const result = await placeOrder.updateOne(filter, updateDoc, options);
+            res.json(result)
+        })
     }
     finally {
         // await client.close();
